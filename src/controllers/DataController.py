@@ -35,7 +35,7 @@ class DataController(BaseController):
             return False, JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": ResponseStatus.FILE_TYPE_NOT_SUPPORTED.value})
         if file.size > self.app_settings.FILE_MAX_SIZE:
             return False, JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": ResponseStatus.FILE_SIZE_EXCEEDED.value})
-<
+
         file_path = self.generate_unique_filename(file.filename, project_id)
         try:
             # Save the file to the project directory
