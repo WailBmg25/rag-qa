@@ -27,7 +27,7 @@ class DataController(BaseController):
         while os.path.exists(new_file_path):
             random_key = self.generate_random_string()
             new_file_path = os.path.join(project_dir, random_key + "_" + clean_filename)
-        return new_file_path
+        return new_file_path, random_key + "_" + clean_filename
 
     async def validate_data(self, file: UploadFile, project_id: str):
         # Validate file properties
@@ -36,7 +36,7 @@ class DataController(BaseController):
         if file.size > self.app_settings.FILE_MAX_SIZE:
             return False, JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": ResponseStatus.FILE_SIZE_EXCEEDED.value})
 
-        file_path = self.generate_unique_filename(file.filename, project_id)
+        file_path, file_name = self.generate_unique_filename(file.filename, project_id)
         try:
             # Save the file to the project directory
             async with aiofiles.open(file_path, 'wb') as out_file:
@@ -46,4 +46,4 @@ class DataController(BaseController):
             self.logger.error(f"Error saving file {file.filename}: {e}")
             return False, JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"error": ResponseStatus.FILE_UPLOAD_FAILED.value})
         
-        return True, JSONResponse(status_code=status.HTTP_200_OK, content={"message": ResponseStatus.FILE_UPLOAD_SUCCESS.value})
+        return True, JSONResponse(status_code=status.HTTP_200_OK, content={"message": ResponseStatus.FILE_UPLOAD_SUCCESS.value, "file_name": file_name})
