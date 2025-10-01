@@ -15,7 +15,7 @@ class DataController(BaseController):
         cleaned_filename = cleaned_filename.replace(' ', '_')
         return cleaned_filename
 
-    def generate_unique_filename(self, original_filename: str, project_id: str) -> str:
+    def generate_unique_filepath(self, original_filename: str, project_id: str) -> str:
         clean_filename = self.get_clean_filename(original_filename)
         project_dir = ProjectController().get_project_path(project_id)
         random_key = self.generate_random_string()
